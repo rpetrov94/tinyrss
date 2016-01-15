@@ -8,6 +8,12 @@
 RSSItem* create_rss_item()
 {
   RSSItem* item = malloc(sizeof(RSSItem));
+  item->title = NULL;
+  item->description = NULL;
+  item->link = NULL;
+  item->author = NULL;
+  item->guid = NULL;
+  item->pub_date = NULL;
 
   return item;
 }

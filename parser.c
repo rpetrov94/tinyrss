@@ -1,9 +1,13 @@
 #include "parser.h"
 
+#include "helper.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 
 #define CLEAN(a) ((char*) (a))
 
@@ -13,19 +17,26 @@ RSS* parse_string(char* string)
 {
   xmlDocPtr doc;
   xmlNodePtr root_element;
+  xmlXPathObjectPtr xpathObj;
+  xmlXPathContextPtr xpathCtx;
+  string = trim(string);
   doc = xmlReadMemory(string, strlen(string), "noname.xml", NULL, 0);
   if (doc == NULL) {
     fprintf(stderr, "Failed to parse document\n");
     return NULL;
   }
 
-  root_element = xmlDocGetRootElement(doc);
-  xmlNodePtr child = root_element->children->children;
+  xpathCtx = xmlXPathNewContext(doc);
+  xpathObj = xmlXPathEvalExpression(BAD_CAST "//channel", xpathCtx);
+
+  root_element = (xpathObj->nodesetval)->nodeTab[0];
 
   RSS* rss = create_rss();
-  build_rss(rss, child);
+  build_rss(rss, root_element->children);
 
   xmlFreeDoc(doc);
+  xmlXPathFreeObject(xpathObj);
+  xmlXPathFreeContext(xpathCtx); 
   xmlCleanupParser();
 
   return rss;
@@ -51,7 +62,7 @@ void build_rss_item(RSSItem* item, xmlNodePtr node)
     setter_func = (SETTER_FUNC) rss_item_set_author;
   else if (strcmp((char*) node->name, "guid") == 0) 
     setter_func = (SETTER_FUNC) rss_item_set_guid;
-  else if (strcmp((char*) node->name, "pub_date") == 0) 
+  else if (strcmp((char*) node->name, "pubDate") == 0) 
     setter_func = (SETTER_FUNC) rss_item_set_pub_date;
 
   if (setter_func != NULL)
@@ -74,7 +85,7 @@ void build_rss(RSS* rss, xmlNodePtr node)
     setter_func = (SETTER_FUNC) rss_set_language;
   else if (strcmp((char*) node->name, "copyright") == 0) 
     setter_func = (SETTER_FUNC) rss_set_copyright;
-  else if (strcmp((char*) node->name, "pub_date") == 0) 
+  else if (strcmp((char*) node->name, "pubDate") == 0) 
     setter_func = (SETTER_FUNC) rss_set_pub_date;
   else if (strcmp((char*) node->name, "item") == 0)
   {

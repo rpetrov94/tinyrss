@@ -7,6 +7,12 @@ RSS* create_rss()
 {
   RSS* rss = malloc(sizeof(RSS));
   rss->items = malloc(sizeof(RSSItem**));
+  rss->title = NULL;
+  rss->link = NULL;
+  rss->description = NULL;
+  rss->language = NULL;
+  rss->copyright = NULL;
+  rss->pub_date = NULL;
   rss->num_items = 0;
 
   return rss;
