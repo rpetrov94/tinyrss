@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
   delete_rss(rss);*/
 
   RSS* from_string = parse_string((char*) test_rss_feed);
-  printf("%lu\n", from_string->num_items);
+  print_rss(from_string);
 
   delete_rss(from_string);
 

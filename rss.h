@@ -27,6 +27,8 @@ void rss_set_copyright(RSS*, const char*);
 void rss_set_pub_date(RSS*, const char*);
 void rss_add_rss_item(RSS*, RSSItem*);
 
-void delete_rss(RSS* rss);
+void delete_rss(RSS*);
+
+void print_rss(RSS*);
 
 #endif

@@ -1,6 +1,8 @@
 #include "rss.h"
 #include "helper.h"
 
+#define PP_RSS(a, b) (pretty_print_node(a, b, NULL))
+
 RSS* create_rss()
 {
   RSS* rss = malloc(sizeof(RSS));
@@ -69,4 +71,20 @@ void delete_rss(RSS* rss)
   rss_delete_items(rss);
 
   free(rss);
+}
+
+void print_rss(RSS* rss)
+{
+  PP_RSS("title", rss->title);
+  PP_RSS("link", rss->link);
+  PP_RSS("description", rss->description);
+  PP_RSS("language", rss->language);
+  PP_RSS("copyright", rss->copyright);
+  PP_RSS("pub_date", rss->pub_date);
+
+  int i;
+  for (i = 0; i < rss->num_items; i++)
+  {
+    print_rss_item(rss->items[i]);
+  }
 }

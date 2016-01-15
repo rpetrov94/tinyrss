@@ -20,6 +20,8 @@ void rss_item_set_author(RSSItem*, const char*);
 void rss_item_set_guid(RSSItem*, const char*);
 void rss_item_set_pub_date(RSSItem*, const char*);
 
-void delete_rss_item(RSSItem* rss_item);
+void delete_rss_item(RSSItem*);
+
+void print_rss_item(RSSItem*);
 
 #endif

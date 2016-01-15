@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#define PP_RSS_ITEM(a, b) (pretty_print_node(a, b, "\t"))
+
 RSSItem* create_rss_item()
 {
   RSSItem* item = malloc(sizeof(RSSItem));
@@ -49,4 +51,14 @@ void delete_rss_item(RSSItem* rss_item)
   free(rss_item->guid);
   free(rss_item->pub_date);
   free(rss_item);
+}
+
+void print_rss_item(RSSItem* rss_item)
+{
+  PP_RSS_ITEM("title", rss_item->title);
+  PP_RSS_ITEM("description", rss_item->description);
+  PP_RSS_ITEM("link", rss_item->link);
+  PP_RSS_ITEM("author", rss_item->author);
+  PP_RSS_ITEM("guid", rss_item->guid);
+  PP_RSS_ITEM("pub_date", rss_item->pub_date);
 }
