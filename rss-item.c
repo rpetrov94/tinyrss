@@ -5,7 +5,7 @@
 
 RSSItem* create_rss_item()
 {
-  RSSItem* item = (RSSItem*) malloc(sizeof(RSSItem));
+  RSSItem* item = malloc(sizeof(RSSItem));
 
   return item;
 }
