@@ -13,6 +13,11 @@ int main(int argc, char* argv[])
   rss_set_language(rss, "en-us");
   rss_set_copyright(rss, "GPL");
 
+  RSSItem* item_1 = create_rss_item();
+  rss_item_set_title(item_1, "fdaijifdjsi");
+
+  rss_add_rss_item(rss, item_1);
+
   delete_rss(rss);
 
   return 0;

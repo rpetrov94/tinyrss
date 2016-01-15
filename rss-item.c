@@ -10,7 +10,7 @@ RSSItem* create_rss_item()
   return item;
 }
 
-void set_title(RSSItem* rss_item, const char* title)
+void rss_item_set_title(RSSItem* rss_item, const char* title)
 {
   set_string(&rss_item->title, title);
 }

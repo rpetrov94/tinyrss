@@ -41,7 +41,19 @@ void rss_set_pub_date(RSS* rss, const char* pub_date)
 
 void rss_add_rss_item(RSS* rss, RSSItem* rss_item)
 {
+  rss->items = (RSSItem**) realloc(rss->items, rss->num_items + 1);
   rss->items[rss->num_items++] = rss_item;
+}
+
+void rss_delete_items(RSS* rss)
+{
+  int i;
+  for (i = 0; i < rss->num_items; i++)
+  {
+    delete_rss_item(rss->items[i]);
+  }
+
+  free(rss->items);
 }
 
 void delete_rss(RSS* rss)
@@ -52,5 +64,7 @@ void delete_rss(RSS* rss)
   free(rss->language);
   free(rss->copyright);
   free(rss->pub_date);
+  rss_delete_items(rss);
+
   free(rss);
 }
