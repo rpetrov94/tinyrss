@@ -8,12 +8,17 @@ typedef struct
   char* link;
   char* author;
   char* guid;
-  char* pubDate;
+  char* pub_date;
 } RSSItem;
 
 RSSItem* create_rss_item();
 
-void rss_item_set_title(RSSItem* rss_item, const char* title);
+void rss_item_set_title(RSSItem*, const char*);
+void rss_item_set_description(RSSItem*, const char*);
+void rss_item_set_link(RSSItem*, const char*);
+void rss_item_set_author(RSSItem*, const char*);
+void rss_item_set_guid(RSSItem*, const char*);
+void rss_item_set_pub_date(RSSItem*, const char*);
 
 void delete_rss_item(RSSItem* rss_item);
 

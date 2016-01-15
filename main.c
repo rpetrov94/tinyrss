@@ -15,8 +15,21 @@ int main(int argc, char* argv[])
 
   RSSItem* item_1 = create_rss_item();
   rss_item_set_title(item_1, "fdaijifdjsi");
+  rss_item_set_description(item_1, "fdaijifddasadsasdasdjsi");
 
   rss_add_rss_item(rss, item_1);
+
+  RSSItem* item_2 = create_rss_item();
+  rss_item_set_title(item_2, "fdaijifdjsi");
+  rss_item_set_description(item_2, "fdaijifddasadsasdasdjsi");
+
+  rss_add_rss_item(rss, item_2);
+
+  RSSItem* item_3 = create_rss_item();
+  rss_item_set_title(item_3, "fdaijifdjsi");
+  rss_item_set_description(item_3, "fdaijifddasadsasdasdjsi");
+
+  rss_add_rss_item(rss, item_3);
 
   delete_rss(rss);
 

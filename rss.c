@@ -41,7 +41,8 @@ void rss_set_pub_date(RSS* rss, const char* pub_date)
 
 void rss_add_rss_item(RSS* rss, RSSItem* rss_item)
 {
-  rss->items = (RSSItem**) realloc(rss->items, rss->num_items + 1);
+  size_t new_size = rss->num_items + 1;
+  rss->items = (RSSItem**) realloc(rss->items, sizeof(RSSItem*) * new_size);
   rss->items[rss->num_items++] = rss_item;
 }
 
