@@ -10,6 +10,33 @@
 #include <libxml/xpathInternals.h>
 
 #define CLEAN(a) ((char*) (a))
+typedef void (*SETTER_FUNC) (void*, const char*);
+
+typedef struct {
+  char field[20];
+  SETTER_FUNC fn;
+} Mapping;
+
+#define END "tinyrss_end"
+const Mapping rss_mapping[] = {
+  {"title", (SETTER_FUNC)rss_set_title},
+  {"description", (SETTER_FUNC)rss_set_description},
+  {"link", (SETTER_FUNC)rss_set_link},
+  {"language", (SETTER_FUNC)rss_set_language},
+  {"copyright", (SETTER_FUNC)rss_set_copyright},
+  {"pubDate", (SETTER_FUNC)rss_set_pub_date},
+  {END, NULL}
+};
+
+const Mapping rss_item_mapping[] = {
+  {"title", (SETTER_FUNC)rss_item_set_title},
+  {"description", (SETTER_FUNC)rss_item_set_description},
+  {"link", (SETTER_FUNC)rss_item_set_link},
+  {"author", (SETTER_FUNC)rss_item_set_author},
+  {"guid", (SETTER_FUNC)rss_item_set_guid},
+  {"pubDate", (SETTER_FUNC)rss_item_set_pub_date},
+  {END, NULL}
+};
 
 void build_rss(RSS*, xmlNodePtr);
 
@@ -42,28 +69,19 @@ RSS* parse_string(char* string)
   return rss;
 }
 
-typedef void (*SETTER_FUNC) (void*, const char*);
 void cleanup_after_set(SETTER_FUNC fn, void* item, char* string)
 {
   (*fn)(item, string);
   xmlFree(string);
 }
 
+SETTER_FUNC map_fn(char*, const Mapping*);
+
 void build_rss_item(RSSItem* item, xmlNodePtr node)
 {
   SETTER_FUNC setter_func = NULL;
-  if (strcmp((char*) node->name, "title") == 0)
-    setter_func = (SETTER_FUNC) rss_item_set_title;
-  else if (strcmp((char*) node->name, "link") == 0) 
-    setter_func = (SETTER_FUNC) rss_item_set_link;
-  else if (strcmp((char*) node->name, "description") == 0) 
-    setter_func = (SETTER_FUNC) rss_item_set_description;
-  else if (strcmp((char*) node->name, "author") == 0) 
-    setter_func = (SETTER_FUNC) rss_item_set_author;
-  else if (strcmp((char*) node->name, "guid") == 0) 
-    setter_func = (SETTER_FUNC) rss_item_set_guid;
-  else if (strcmp((char*) node->name, "pubDate") == 0) 
-    setter_func = (SETTER_FUNC) rss_item_set_pub_date;
+  char* node_name = (char*) node->name;
+  setter_func = map_fn(node_name, rss_item_mapping);
 
   if (setter_func != NULL)
     cleanup_after_set(setter_func, item, CLEAN(xmlNodeGetContent(node)));
@@ -75,19 +93,10 @@ void build_rss_item(RSSItem* item, xmlNodePtr node)
 void build_rss(RSS* rss, xmlNodePtr node)
 {
   SETTER_FUNC setter_func = NULL;
-  if (strcmp((char*) node->name, "title") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_title;
-  else if (strcmp((char*) node->name, "link") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_link;
-  else if (strcmp((char*) node->name, "description") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_description;
-  else if (strcmp((char*) node->name, "language") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_language;
-  else if (strcmp((char*) node->name, "copyright") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_copyright;
-  else if (strcmp((char*) node->name, "pubDate") == 0) 
-    setter_func = (SETTER_FUNC) rss_set_pub_date;
-  else if (strcmp((char*) node->name, "item") == 0)
+  char* node_name = (char*) node->name;
+  setter_func = map_fn(node_name, rss_mapping);
+
+  if (strcmp((char*) node->name, "item") == 0)
   {
     RSSItem* item = create_rss_item();
     build_rss_item(item, node->children);
@@ -99,4 +108,17 @@ void build_rss(RSS* rss, xmlNodePtr node)
 
   if (node->next == NULL) return;
   build_rss(rss, node->next);
+}
+
+SETTER_FUNC map_fn(char* field, const Mapping* mapping)
+{
+  const Mapping* p_mapping = mapping;
+  while (strcmp((*p_mapping).field, END) != 0) {
+    if (strcmp(field, (*p_mapping).field) == 0) {
+      return (*p_mapping).fn;
+    }
+    p_mapping++;
+  }
+
+  return NULL;
 }
