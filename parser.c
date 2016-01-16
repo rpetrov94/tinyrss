@@ -11,6 +11,7 @@
 
 #define CLEAN(a) ((char*) (a))
 typedef void (*SETTER_FUNC) (void*, const char*);
+typedef void (*BUILD_FUNC) (void*, xmlNodePtr);
 
 typedef struct {
   char field[20];
@@ -38,6 +39,7 @@ const Mapping rss_item_mapping[] = {
   {END, NULL}
 };
 
+void build(void*, xmlNodePtr, BUILD_FUNC);
 void build_rss(RSS*, xmlNodePtr);
 
 RSS* parse_string(char* string)
@@ -59,7 +61,7 @@ RSS* parse_string(char* string)
   root_element = (xpathObj->nodesetval)->nodeTab[0];
 
   RSS* rss = create_rss();
-  build_rss(rss, root_element->children);
+  build(rss, root_element->children, (BUILD_FUNC)build_rss);
 
   xmlFreeDoc(doc);
   xmlXPathFreeObject(xpathObj);
@@ -77,37 +79,30 @@ void cleanup_after_set(SETTER_FUNC fn, void* item, char* string)
 
 SETTER_FUNC map_fn(char*, const Mapping*);
 
-void build_rss_item(RSSItem* item, xmlNodePtr node)
+void build(void* item, xmlNodePtr node, BUILD_FUNC build_fn)
 {
   SETTER_FUNC setter_func = NULL;
   char* node_name = (char*) node->name;
   setter_func = map_fn(node_name, rss_item_mapping);
 
+  if (build_fn)
+    build_fn(item, node);
+
   if (setter_func != NULL)
     cleanup_after_set(setter_func, item, CLEAN(xmlNodeGetContent(node)));
 
   if (node->next == NULL) return;
-  build_rss_item(item, node->next);
+  build(item, node->next, build_fn);
 }
 
 void build_rss(RSS* rss, xmlNodePtr node)
 {
-  SETTER_FUNC setter_func = NULL;
-  char* node_name = (char*) node->name;
-  setter_func = map_fn(node_name, rss_mapping);
-
   if (strcmp((char*) node->name, "item") == 0)
   {
     RSSItem* item = create_rss_item();
-    build_rss_item(item, node->children);
+    build(item, node->children, NULL);
     rss_add_rss_item(rss, item);
   }
-
-  if (setter_func != NULL)
-    cleanup_after_set(setter_func, rss, CLEAN(xmlNodeGetContent(node)));
-
-  if (node->next == NULL) return;
-  build_rss(rss, node->next);
 }
 
 SETTER_FUNC map_fn(char* field, const Mapping* mapping)
