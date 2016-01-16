@@ -9,7 +9,7 @@
 
 void usage();
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
   if (argc < 2)
   {
@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  FetchData* fetch_data = fetch_document("http://www.startalkradio.net/feed/");
+  FetchData* fetch_data = fetch_document(argv[1]);
   RSS* rss = parse_string(fetch_data->data);
   print_rss(rss);
 
