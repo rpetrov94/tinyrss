@@ -7,13 +7,21 @@ RSS* create_rss()
 {
   RSS* rss = malloc(sizeof(RSS));
   rss->items = malloc(sizeof(RSSItem**));
+  rss->num_items = 0;
+  rss->categories = malloc(sizeof(char**));
+  rss->num_categories = 0;
   rss->title = NULL;
   rss->link = NULL;
   rss->description = NULL;
   rss->language = NULL;
   rss->copyright = NULL;
   rss->pub_date = NULL;
-  rss->num_items = 0;
+  rss->managing_editor = NULL;
+  rss->web_master = NULL;
+  rss->last_build_date = NULL;
+  rss->generator = NULL;
+  rss->docs = NULL;
+  rss->ttl = 0;
 
   return rss;
 }
@@ -46,6 +54,43 @@ void rss_set_copyright(RSS* rss, const char* copyright)
 void rss_set_pub_date(RSS* rss, const char* pub_date)
 {
   set_string(&rss->pub_date, pub_date);
+}
+
+void rss_set_managing_editor(RSS* rss, const char* managing_editor)
+{
+  set_string(&rss->managing_editor, managing_editor);
+}
+
+void rss_set_web_master(RSS* rss, const char* web_master)
+{
+  set_string(&rss->web_master, web_master);
+}
+
+void rss_set_last_build_date(RSS* rss, const char* last_build_date)
+{
+  set_string(&rss->last_build_date, last_build_date);
+}
+
+void rss_set_generator(RSS* rss, const char* generator)
+{
+  set_string(&rss->generator, generator);
+}
+
+void rss_set_docs(RSS* rss, const char* docs)
+{
+  set_string(&rss->docs, docs);
+}
+
+void rss_set_ttl(RSS* rss, const char* ttl)
+{
+  rss->ttl = strtoul(ttl, NULL, 10);
+}
+
+void rss_add_category(RSS* rss, char* category)
+{
+  size_t new_size = rss->num_categories + 1;
+  rss->categories = realloc(rss->categories, sizeof(char*) * new_size);
+  rss->categories[rss->num_categories++] = category;
 }
 
 void rss_add_rss_item(RSS* rss, RSSItem* rss_item)
@@ -87,6 +132,12 @@ void print_rss(RSS* rss)
   PP_RSS("language", rss->language);
   PP_RSS("copyright", rss->copyright);
   PP_RSS("pub_date", rss->pub_date);
+  PP_RSS("managing_editor", rss->managing_editor);
+  PP_RSS("web_master", rss->web_master);
+  PP_RSS("pub_date", rss->pub_date); 
+  PP_RSS("last_build_date", rss->last_build_date);
+  PP_RSS("generator", rss->generator);
+  PP_RSS("docs", rss->docs);
 
   int i;
   for (i = 0; i < rss->num_items; i++)

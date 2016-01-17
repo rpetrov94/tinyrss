@@ -26,6 +26,13 @@ const Mapping rss_mapping[] = {
   {"language", (SETTER_FUNC)rss_set_language},
   {"copyright", (SETTER_FUNC)rss_set_copyright},
   {"pubDate", (SETTER_FUNC)rss_set_pub_date},
+  {"managingEditor", (SETTER_FUNC)rss_set_managing_editor},
+  {"webMaster", (SETTER_FUNC)rss_set_web_master},
+  {"pubDate", (SETTER_FUNC)rss_set_pub_date},
+  {"lastBuildDate", (SETTER_FUNC)rss_set_last_build_date},
+  {"generator", (SETTER_FUNC)rss_set_generator},
+  {"docs", (SETTER_FUNC)rss_set_docs},
+  {"ttl", (SETTER_FUNC)rss_set_ttl},
   {END, NULL}
 };
 
@@ -39,7 +46,7 @@ const Mapping rss_item_mapping[] = {
   {END, NULL}
 };
 
-void build(void*, xmlNodePtr, BUILD_FUNC);
+void build(void*, xmlNodePtr, const Mapping*, BUILD_FUNC);
 void build_rss(RSS*, xmlNodePtr);
 
 RSS* parse_string(char* string)
@@ -61,7 +68,7 @@ RSS* parse_string(char* string)
   root_element = (xpathObj->nodesetval)->nodeTab[0];
 
   RSS* rss = create_rss();
-  build(rss, root_element->children, (BUILD_FUNC)build_rss);
+  build(rss, root_element->children, rss_mapping, (BUILD_FUNC)build_rss);
 
   xmlFreeDoc(doc);
   xmlXPathFreeObject(xpathObj);
@@ -79,11 +86,13 @@ void cleanup_after_set(SETTER_FUNC fn, void* item, char* string)
 
 SETTER_FUNC map_fn(char*, const Mapping*);
 
-void build(void* item, xmlNodePtr node, BUILD_FUNC build_fn)
+void 
+build(void* item, xmlNodePtr node, const Mapping* mapping, BUILD_FUNC build_fn)
 {
   SETTER_FUNC setter_func = NULL;
   char* node_name = (char*) node->name;
-  setter_func = map_fn(node_name, rss_item_mapping);
+  printf("%s\n", node_name);
+  setter_func = map_fn(node_name, mapping);
 
   if (build_fn)
     build_fn(item, node);
@@ -92,7 +101,7 @@ void build(void* item, xmlNodePtr node, BUILD_FUNC build_fn)
     cleanup_after_set(setter_func, item, CLEAN(xmlNodeGetContent(node)));
 
   if (node->next == NULL) return;
-  build(item, node->next, build_fn);
+  build(item, node->next, mapping, build_fn);
 }
 
 void build_rss(RSS* rss, xmlNodePtr node)
@@ -100,7 +109,7 @@ void build_rss(RSS* rss, xmlNodePtr node)
   if (strcmp((char*) node->name, "item") == 0)
   {
     RSSItem* item = create_rss_item();
-    build(item, node->children, NULL);
+    build(item, node->children, rss_item_mapping, NULL);
     rss_add_rss_item(rss, item);
   }
 }
@@ -109,6 +118,7 @@ SETTER_FUNC map_fn(char* field, const Mapping* mapping)
 {
   const Mapping* p_mapping = mapping;
   while (strcmp((*p_mapping).field, END) != 0) {
+    printf("comparing %s to %s \n", field, (*p_mapping).field);
     if (strcmp(field, (*p_mapping).field) == 0) {
       return (*p_mapping).fn;
     }
