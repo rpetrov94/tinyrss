@@ -10,3 +10,4 @@ TODO
 * Make it failure proof
 * Enhance pretty printing
 * Eventually split into a library and an executable
+* Change codestyle
