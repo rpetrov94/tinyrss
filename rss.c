@@ -163,6 +163,8 @@ void print_rss(RSS* rss)
   PP_RSS("generator", rss->generator);
   PP_RSS("docs", rss->docs);
 
+  print_rss_image(rss->image);
+
   int i;
   for (i = 0; i < rss->num_items; i++)
   {

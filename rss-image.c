@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#define PP_RSS_IMAGE(a, b) (pretty_print_node(a, b, "\t"))
 #define FREE(a) ({if (a != NULL) free(a);})
 
 rss_image_t* create_rss_image()
@@ -55,4 +56,12 @@ void delete_rss_image(rss_image_t* image)
   FREE(image->link);
   FREE(image->description);
   FREE(image);
+}
+
+void print_rss_image(rss_image_t* image)
+{
+  PP_RSS_IMAGE("url", image->url);
+  PP_RSS_IMAGE("title", image->title);
+  PP_RSS_IMAGE("link", image->link);
+  PP_RSS_IMAGE("description", image->description);
 }

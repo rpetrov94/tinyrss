@@ -29,4 +29,6 @@ void rss_image_set_description(rss_image_t*, const char*);
 
 void delete_rss_image(rss_image_t*);
 
+void print_rss_image(rss_image_t*);
+
 #endif
