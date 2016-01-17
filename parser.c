@@ -108,9 +108,7 @@ build(void* item, xmlNodePtr node, const Mapping* mapping, BUILD_FUNC build_fn)
     build_fn(item, node);
 
   if (setter_func != NULL)
-  {
     cleanup_after_set(setter_func, item, xmlNodeGetContent(node));
-  }
 
   if (node->next == NULL) return;
   build(item, node->next, mapping, build_fn);
