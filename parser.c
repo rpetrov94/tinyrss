@@ -118,7 +118,6 @@ SETTER_FUNC map_fn(char* field, const Mapping* mapping)
 {
   const Mapping* p_mapping = mapping;
   while (strcmp((*p_mapping).field, END) != 0) {
-    printf("comparing %s to %s \n", field, (*p_mapping).field);
     if (strcmp(field, (*p_mapping).field) == 0) {
       return (*p_mapping).fn;
     }
