@@ -6,9 +6,10 @@
 RSS* create_rss()
 {
   RSS* rss = malloc(sizeof(RSS));
-  rss->items = malloc(sizeof(RSSItem**));
+  rss->items = NULL;
+  rss->categories = NULL;
+  rss->image = NULL;
   rss->num_items = 0;
-  rss->categories = malloc(sizeof(char**));
   rss->num_categories = 0;
   rss->title = NULL;
   rss->link = NULL;
@@ -86,11 +87,16 @@ void rss_set_ttl(RSS* rss, const char* ttl)
   rss->ttl = strtoul(ttl, NULL, 10);
 }
 
+void rss_set_image(RSS* rss, rss_image_t* image)
+{
+  rss->image = image;
+}
+
 void rss_add_category(RSS* rss, char* category)
 {
   size_t new_size = rss->num_categories + 1;
   rss->categories = realloc(rss->categories, sizeof(char*) * new_size);
-  rss->categories[rss->num_categories++] = category;
+  set_string(&rss->categories[rss->num_categories++], category);
 }
 
 void rss_add_rss_item(RSS* rss, RSSItem* rss_item)
@@ -111,6 +117,17 @@ void rss_delete_items(RSS* rss)
   free(rss->items);
 }
 
+void rss_delete_categories(RSS* rss)
+{
+  int i;
+  for (i = 0; i < rss->num_categories; i++)
+  {
+    free(rss->categories[i]);
+  }
+
+  free(rss->categories);
+}
+
 void delete_rss(RSS* rss)
 {
   free(rss->title);
@@ -118,8 +135,15 @@ void delete_rss(RSS* rss)
   free(rss->description);
   free(rss->language);
   free(rss->copyright);
+  free(rss->managing_editor);
+  free(rss->web_master);
   free(rss->pub_date);
+  free(rss->last_build_date);
+  free(rss->generator);
+  free(rss->docs);
+  if (rss->image != NULL) delete_rss_image(rss->image);
   rss_delete_items(rss);
+  rss_delete_categories(rss);
 
   free(rss);
 }

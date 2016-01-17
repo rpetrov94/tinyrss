@@ -9,7 +9,6 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
-#define CLEAN(a) ((char*) (a))
 typedef void (*SETTER_FUNC) (void*, const char*);
 typedef void (*BUILD_FUNC) (void*, xmlNodePtr);
 
@@ -31,8 +30,19 @@ const Mapping rss_mapping[] = {
   {"pubDate", (SETTER_FUNC)rss_set_pub_date},
   {"lastBuildDate", (SETTER_FUNC)rss_set_last_build_date},
   {"generator", (SETTER_FUNC)rss_set_generator},
+  {"category", (SETTER_FUNC)rss_add_category},
   {"docs", (SETTER_FUNC)rss_set_docs},
   {"ttl", (SETTER_FUNC)rss_set_ttl},
+  {END, NULL}
+};
+
+const Mapping rss_image_mapping[] = {
+  {"url", (SETTER_FUNC)rss_image_set_url},
+  {"title", (SETTER_FUNC)rss_image_set_title},
+  {"link", (SETTER_FUNC)rss_image_set_link},
+  {"width", (SETTER_FUNC)rss_image_set_width},
+  {"height", (SETTER_FUNC)rss_image_set_height},
+  {"description", (SETTER_FUNC)rss_image_set_description},
   {END, NULL}
 };
 
@@ -43,6 +53,7 @@ const Mapping rss_item_mapping[] = {
   {"author", (SETTER_FUNC)rss_item_set_author},
   {"guid", (SETTER_FUNC)rss_item_set_guid},
   {"pubDate", (SETTER_FUNC)rss_item_set_pub_date},
+  {"category", (SETTER_FUNC)rss_item_add_category},
   {END, NULL}
 };
 
@@ -78,9 +89,9 @@ RSS* parse_string(char* string)
   return rss;
 }
 
-void cleanup_after_set(SETTER_FUNC fn, void* item, char* string)
+void cleanup_after_set(SETTER_FUNC fn, void* item, xmlChar* string)
 {
-  (*fn)(item, string);
+  (*fn)(item, (char*) string);
   xmlFree(string);
 }
 
@@ -91,14 +102,15 @@ build(void* item, xmlNodePtr node, const Mapping* mapping, BUILD_FUNC build_fn)
 {
   SETTER_FUNC setter_func = NULL;
   char* node_name = (char*) node->name;
-  printf("%s\n", node_name);
   setter_func = map_fn(node_name, mapping);
 
   if (build_fn)
     build_fn(item, node);
 
   if (setter_func != NULL)
-    cleanup_after_set(setter_func, item, CLEAN(xmlNodeGetContent(node)));
+  {
+    cleanup_after_set(setter_func, item, xmlNodeGetContent(node));
+  }
 
   if (node->next == NULL) return;
   build(item, node->next, mapping, build_fn);
@@ -111,6 +123,12 @@ void build_rss(RSS* rss, xmlNodePtr node)
     RSSItem* item = create_rss_item();
     build(item, node->children, rss_item_mapping, NULL);
     rss_add_rss_item(rss, item);
+  }
+  else if (strcmp((char*) node->name, "image") == 0)
+  {
+    rss_image_t* image = create_rss_image();
+    build(image, node->children, rss_image_mapping, NULL);
+    rss_set_image(rss, image);
   }
 }
 

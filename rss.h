@@ -2,6 +2,7 @@
 #define RSS_H
 
 #include "rss-item.h"
+#include "rss-image.h"
 
 #include <stdlib.h>
 
@@ -16,11 +17,12 @@ typedef struct
   char* web_master;
   char* pub_date;
   char* last_build_date;
-  char** categories;
-  size_t num_categories;
   char* generator;
   char* docs;
   unsigned ttl;
+  rss_image_t* image;
+  char** categories;
+  size_t num_categories;
   RSSItem** items;
   size_t num_items;
 } RSS;
@@ -39,6 +41,7 @@ void rss_set_last_build_date(RSS*, const char*);
 void rss_set_generator(RSS*, const char*);
 void rss_set_docs(RSS*, const char*);
 void rss_set_ttl(RSS*, const char*);
+void rss_set_image(RSS*, rss_image_t*);
 void rss_add_category(RSS*, char*);
 void rss_add_rss_item(RSS*, RSSItem*);
 
