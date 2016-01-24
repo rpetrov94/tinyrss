@@ -58,9 +58,10 @@ const Mapping rss_item_mapping[] = {
 };
 
 void build(void*, xmlNodePtr, const Mapping*, BUILD_FUNC);
-void build_rss(RSS*, xmlNodePtr);
+void build_rss(rss_t*, xmlNodePtr);
 
-RSS* parse_string(char* string)
+rss_t*
+parse_string(char* string)
 {
   xmlDocPtr doc;
   xmlNodePtr root_element;
@@ -78,7 +79,7 @@ RSS* parse_string(char* string)
 
   root_element = (xpathObj->nodesetval)->nodeTab[0];
 
-  RSS* rss = create_rss();
+  rss_t* rss = create_rss();
   build(rss, root_element->children, rss_mapping, (BUILD_FUNC)build_rss);
 
   xmlFreeDoc(doc);
@@ -89,7 +90,8 @@ RSS* parse_string(char* string)
   return rss;
 }
 
-void cleanup_after_set(SETTER_FUNC fn, void* item, xmlChar* string)
+void
+cleanup_after_set(SETTER_FUNC fn, void* item, xmlChar* string)
 {
   (*fn)(item, (char*) string);
   xmlFree(string);
@@ -114,11 +116,12 @@ build(void* item, xmlNodePtr node, const Mapping* mapping, BUILD_FUNC build_fn)
   build(item, node->next, mapping, build_fn);
 }
 
-void build_rss(RSS* rss, xmlNodePtr node)
+void
+build_rss(rss_t* rss, xmlNodePtr node)
 {
   if (strcmp((char*) node->name, "item") == 0)
   {
-    RSSItem* item = create_rss_item();
+    rss_item_t* item = create_rss_item();
     build(item, node->children, rss_item_mapping, NULL);
     rss_add_rss_item(rss, item);
   }
@@ -130,7 +133,8 @@ void build_rss(RSS* rss, xmlNodePtr node)
   }
 }
 
-SETTER_FUNC map_fn(char* field, const Mapping* mapping)
+SETTER_FUNC
+map_fn(char* field, const Mapping* mapping)
 {
   const Mapping* p_mapping = mapping;
   while (strcmp((*p_mapping).field, END) != 0) {

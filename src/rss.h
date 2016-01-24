@@ -1,5 +1,5 @@
-#ifndef RSS_H
-#define RSS_H
+#ifndef rss_t_H
+#define rss_t_H
 
 #include "rss-item.h"
 #include "rss-image.h"
@@ -23,30 +23,30 @@ typedef struct
   rss_image_t* image;
   char** categories;
   size_t num_categories;
-  RSSItem** items;
+  rss_item_t** items;
   size_t num_items;
-} RSS;
+} rss_t;
 
-RSS* create_rss();
+rss_t* create_rss();
 
-void rss_set_title(RSS*, const char*);
-void rss_set_link(RSS*, const char*);
-void rss_set_description(RSS*, const char*);
-void rss_set_language(RSS*, const char*);
-void rss_set_copyright(RSS*, const char*);
-void rss_set_pub_date(RSS*, const char*);
-void rss_set_managing_editor(RSS*, const char*);
-void rss_set_web_master(RSS*, const char*);
-void rss_set_last_build_date(RSS*, const char*);
-void rss_set_generator(RSS*, const char*);
-void rss_set_docs(RSS*, const char*);
-void rss_set_ttl(RSS*, const char*);
-void rss_set_image(RSS*, rss_image_t*);
-void rss_add_category(RSS*, char*);
-void rss_add_rss_item(RSS*, RSSItem*);
+void rss_set_title(rss_t*, const char*);
+void rss_set_link(rss_t*, const char*);
+void rss_set_description(rss_t*, const char*);
+void rss_set_language(rss_t*, const char*);
+void rss_set_copyright(rss_t*, const char*);
+void rss_set_pub_date(rss_t*, const char*);
+void rss_set_managing_editor(rss_t*, const char*);
+void rss_set_web_master(rss_t*, const char*);
+void rss_set_last_build_date(rss_t*, const char*);
+void rss_set_generator(rss_t*, const char*);
+void rss_set_docs(rss_t*, const char*);
+void rss_set_ttl(rss_t*, const char*);
+void rss_set_image(rss_t*, rss_image_t*);
+void rss_add_category(rss_t*, char*);
+void rss_add_rss_item(rss_t*, rss_item_t*);
 
-void delete_rss(RSS*);
+void delete_rss(rss_t*);
 
-void print_rss(RSS*);
+void print_rss(rss_t*);
 
 #endif

@@ -7,10 +7,10 @@ typedef struct
 {
   char* data;
   size_t size;
-} FetchData;
+} fetch_data_t;
 
-FetchData* fetch_document(const char* uri);
+fetch_data_t* fetch_document(const char* uri);
 
-void delete_fetch_data(FetchData*);
+void delete_fetch_data(fetch_data_t*);
 
 #endif

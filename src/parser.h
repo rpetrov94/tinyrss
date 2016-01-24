@@ -3,6 +3,6 @@
 
 #include "rss.h"
 
-RSS* parse_string(char*);
+rss_t* parse_string(char*);
 
 #endif

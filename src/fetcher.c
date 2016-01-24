@@ -5,18 +5,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-FetchData* create_fetch_data()
+fetch_data_t*
+create_fetch_data()
 {
-  FetchData* fetch_data = malloc(sizeof(FetchData));
+  fetch_data_t* fetch_data = malloc(sizeof(fetch_data_t));
   fetch_data->data = malloc(sizeof(char));
   return fetch_data;
 }
 
-void fetch_content(FetchData* fetch_data, const char* uri);
+void fetch_content(fetch_data_t* fetch_data, const char* uri);
 
-FetchData* fetch_document(const char* uri)
+fetch_data_t*
+fetch_document(const char* uri)
 {
-  FetchData* fetch_data = create_fetch_data();
+  fetch_data_t* fetch_data = create_fetch_data();
   fetch_content(fetch_data, uri);
 
   return fetch_data;
@@ -26,7 +28,7 @@ static size_t
 fetch_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
-  FetchData* mem = (FetchData*)userp;
+  fetch_data_t* mem = (fetch_data_t*)userp;
  
   mem->data = realloc(mem->data, mem->size + realsize + 1);
   if(mem->data == NULL) {
@@ -41,7 +43,8 @@ fetch_callback(void *contents, size_t size, size_t nmemb, void *userp)
   return realsize;
 }
 
-void fetch_content(FetchData* fetch_data, const char* uri)
+void
+fetch_content(fetch_data_t* fetch_data, const char* uri)
 {
   CURL* curl;
 
@@ -56,7 +59,8 @@ void fetch_content(FetchData* fetch_data, const char* uri)
   curl_global_cleanup();
 }
 
-void delete_fetch_data(FetchData* fetch_data)
+void
+delete_fetch_data(fetch_data_t* fetch_data)
 {
   free(fetch_data->data);
   free(fetch_data);

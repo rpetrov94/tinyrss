@@ -9,7 +9,8 @@
 
 void usage();
 
-int main(int argc, const char* argv[])
+int
+main(int argc, const char* argv[])
 {
   if (argc < 2)
   {
@@ -17,8 +18,8 @@ int main(int argc, const char* argv[])
     return 1;
   }
 
-  FetchData* fetch_data = fetch_document(argv[1]);
-  RSS* rss = parse_string(fetch_data->data);
+  fetch_data_t* fetch_data = fetch_document(argv[1]);
+  rss_t* rss = parse_string(fetch_data->data);
   print_rss(rss);
 
   delete_fetch_data(fetch_data);
@@ -27,7 +28,8 @@ int main(int argc, const char* argv[])
   return 0;
 }
 
-void usage()
+void
+usage()
 {
   printf("usage: tinyrss <URL>\n");
 }

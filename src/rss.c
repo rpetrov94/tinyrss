@@ -1,11 +1,12 @@
 #include "rss.h"
 #include "helper.h"
 
-#define PP_RSS(a, b) (pretty_print_node(a, b, NULL))
+#define PP_rss_t(a, b) (pretty_print_node(a, b, NULL))
 
-RSS* create_rss()
+rss_t*
+create_rss()
 {
-  RSS* rss = malloc(sizeof(RSS));
+  rss_t* rss = malloc(sizeof(rss_t));
   rss->items = NULL;
   rss->categories = NULL;
   rss->image = NULL;
@@ -27,86 +28,102 @@ RSS* create_rss()
   return rss;
 }
 
-void rss_set_title(RSS* rss, const char* title)
+void
+rss_set_title(rss_t* rss, const char* title)
 {
   set_string(&rss->title, title);
 }
 
-void rss_set_link(RSS* rss, const char* link)
+void
+rss_set_link(rss_t* rss, const char* link)
 {
   set_string(&rss->link, link);
 }
 
-void rss_set_description(RSS* rss, const char* description)
+void
+rss_set_description(rss_t* rss, const char* description)
 {
   set_string(&rss->description, description);
 }
 
-void rss_set_language(RSS* rss, const char* language)
+void
+rss_set_language(rss_t* rss, const char* language)
 {
   set_string(&rss->language, language);
 }
 
-void rss_set_copyright(RSS* rss, const char* copyright)
+void
+rss_set_copyright(rss_t* rss, const char* copyright)
 {
   set_string(&rss->copyright, copyright);
 }
 
-void rss_set_pub_date(RSS* rss, const char* pub_date)
+void
+rss_set_pub_date(rss_t* rss, const char* pub_date)
 {
   set_string(&rss->pub_date, pub_date);
 }
 
-void rss_set_managing_editor(RSS* rss, const char* managing_editor)
+void
+rss_set_managing_editor(rss_t* rss, const char* managing_editor)
 {
   set_string(&rss->managing_editor, managing_editor);
 }
 
-void rss_set_web_master(RSS* rss, const char* web_master)
+void
+rss_set_web_master(rss_t* rss, const char* web_master)
 {
   set_string(&rss->web_master, web_master);
 }
 
-void rss_set_last_build_date(RSS* rss, const char* last_build_date)
+void
+rss_set_last_build_date(rss_t* rss, const char* last_build_date)
 {
   set_string(&rss->last_build_date, last_build_date);
 }
 
-void rss_set_generator(RSS* rss, const char* generator)
+void
+rss_set_generator(rss_t* rss, const char* generator)
 {
   set_string(&rss->generator, generator);
 }
 
-void rss_set_docs(RSS* rss, const char* docs)
+void
+rss_set_docs(rss_t* rss, const char* docs)
 {
   set_string(&rss->docs, docs);
 }
 
-void rss_set_ttl(RSS* rss, const char* ttl)
+void
+rss_set_ttl(rss_t* rss, const char* ttl)
 {
   rss->ttl = strtoul(ttl, NULL, 10);
 }
 
-void rss_set_image(RSS* rss, rss_image_t* image)
+void
+rss_set_image(rss_t* rss, rss_image_t* image)
 {
   rss->image = image;
 }
 
-void rss_add_category(RSS* rss, char* category)
+void
+rss_add_category(rss_t* rss, char* category)
 {
   size_t new_size = rss->num_categories + 1;
   rss->categories = realloc(rss->categories, sizeof(char*) * new_size);
   set_string(&rss->categories[rss->num_categories++], category);
 }
 
-void rss_add_rss_item(RSS* rss, RSSItem* rss_item)
+void
+rss_add_rss_item(rss_t* rss, rss_item_t* rss_item)
 {
   size_t new_size = rss->num_items + 1;
-  rss->items = realloc(rss->items, sizeof(RSSItem*) * new_size);
+  rss->items = realloc(rss->items, sizeof(rss_item_t*) * new_size);
   rss->items[rss->num_items++] = rss_item;
 }
 
-void rss_delete_items(RSS* rss)
+void
+rss_delete_items(rss_t* rss)
 {
   int i;
   for (i = 0; i < rss->num_items; i++)
@@ -117,7 +134,8 @@ void rss_delete_items(RSS* rss)
   free(rss->items);
 }
 
-void rss_delete_categories(RSS* rss)
+void
+rss_delete_categories(rss_t* rss)
 {
   int i;
   for (i = 0; i < rss->num_categories; i++)
@@ -128,7 +146,8 @@ void rss_delete_categories(RSS* rss)
   free(rss->categories);
 }
 
-void delete_rss(RSS* rss)
+void
+delete_rss(rss_t* rss)
 {
   free(rss->title);
   free(rss->link);
@@ -148,20 +167,21 @@ void delete_rss(RSS* rss)
   free(rss);
 }
 
-void print_rss(RSS* rss)
+void
+print_rss(rss_t* rss)
 {
-  PP_RSS("title", rss->title);
-  PP_RSS("link", rss->link);
-  PP_RSS("description", rss->description);
-  PP_RSS("language", rss->language);
-  PP_RSS("copyright", rss->copyright);
-  PP_RSS("pub_date", rss->pub_date);
-  PP_RSS("managing_editor", rss->managing_editor);
-  PP_RSS("web_master", rss->web_master);
-  PP_RSS("pub_date", rss->pub_date); 
-  PP_RSS("last_build_date", rss->last_build_date);
-  PP_RSS("generator", rss->generator);
-  PP_RSS("docs", rss->docs);
+  PP_rss_t("title", rss->title);
+  PP_rss_t("link", rss->link);
+  PP_rss_t("description", rss->description);
+  PP_rss_t("language", rss->language);
+  PP_rss_t("copyright", rss->copyright);
+  PP_rss_t("pub_date", rss->pub_date);
+  PP_rss_t("managing_editor", rss->managing_editor);
+  PP_rss_t("web_master", rss->web_master);
+  PP_rss_t("pub_date", rss->pub_date); 
+  PP_rss_t("last_build_date", rss->last_build_date);
+  PP_rss_t("generator", rss->generator);
+  PP_rss_t("docs", rss->docs);
 
   print_rss_image(rss->image);
 
