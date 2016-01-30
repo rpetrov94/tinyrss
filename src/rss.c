@@ -1,7 +1,5 @@
 #include "rss.h"
-#include "helper.h"
-
-#define PP_rss_t(a, b) (pretty_print_node(a, b, NULL))
+#include "common.h"
 
 rss_t*
 create_rss()
@@ -140,54 +138,29 @@ rss_delete_categories(rss_t* rss)
   int i;
   for (i = 0; i < rss->num_categories; i++)
   {
-    free(rss->categories[i]);
+    FREE(rss->categories[i]);
   }
 
-  free(rss->categories);
+  FREE(rss->categories);
 }
 
 void
 delete_rss(rss_t* rss)
 {
-  free(rss->title);
-  free(rss->link);
-  free(rss->description);
-  free(rss->language);
-  free(rss->copyright);
-  free(rss->managing_editor);
-  free(rss->web_master);
-  free(rss->pub_date);
-  free(rss->last_build_date);
-  free(rss->generator);
-  free(rss->docs);
+  FREE(rss->title);
+  FREE(rss->link);
+  FREE(rss->description);
+  FREE(rss->language);
+  FREE(rss->copyright);
+  FREE(rss->managing_editor);
+  FREE(rss->web_master);
+  FREE(rss->pub_date);
+  FREE(rss->last_build_date);
+  FREE(rss->generator);
+  FREE(rss->docs);
   if (rss->image != NULL) delete_rss_image(rss->image);
   rss_delete_items(rss);
   rss_delete_categories(rss);
 
-  free(rss);
-}
-
-void
-print_rss(rss_t* rss)
-{
-  PP_rss_t("title", rss->title);
-  PP_rss_t("link", rss->link);
-  PP_rss_t("description", rss->description);
-  PP_rss_t("language", rss->language);
-  PP_rss_t("copyright", rss->copyright);
-  PP_rss_t("pub_date", rss->pub_date);
-  PP_rss_t("managing_editor", rss->managing_editor);
-  PP_rss_t("web_master", rss->web_master);
-  PP_rss_t("pub_date", rss->pub_date); 
-  PP_rss_t("last_build_date", rss->last_build_date);
-  PP_rss_t("generator", rss->generator);
-  PP_rss_t("docs", rss->docs);
-
-  print_rss_image(rss->image);
-
-  int i;
-  for (i = 0; i < rss->num_items; i++)
-  {
-    print_rss_item(rss->items[i]);
-  }
+  FREE(rss);
 }

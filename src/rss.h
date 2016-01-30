@@ -1,5 +1,5 @@
-#ifndef rss_t_H
-#define rss_t_H
+#ifndef RSS_H
+#define RSS_H
 
 #include "rss-item.h"
 #include "rss-image.h"
@@ -46,7 +46,5 @@ void rss_add_category(rss_t*, char*);
 void rss_add_rss_item(rss_t*, rss_item_t*);
 
 void delete_rss(rss_t*);
-
-void print_rss(rss_t*);
 
 #endif

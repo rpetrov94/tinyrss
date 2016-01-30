@@ -27,6 +27,4 @@ void rss_item_add_category(rss_item_t*, char*);
 
 void delete_rss_item(rss_item_t*);
 
-void print_rss_item(rss_item_t*);
-
 #endif

@@ -6,6 +6,7 @@
 #include "rss-item.h"
 #include "parser.h"
 #include "fetcher.h"
+#include "pp.h"
 
 void usage();
 
@@ -20,7 +21,7 @@ main(int argc, const char* argv[])
 
   fetch_data_t* fetch_data = fetch_document(argv[1]);
   rss_t* rss = parse_string(fetch_data->data);
-  print_rss(rss);
+  pp_rss(rss);
 
   delete_fetch_data(fetch_data);
   delete_rss(rss);
